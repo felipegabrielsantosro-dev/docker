@@ -4,6 +4,7 @@ use app\controller\Home;
 use app\controller\Login;
 use app\controller\User;
 use Slim\Routing\RouteCollectorProxy;
+use Phinx\Migration\AbstractMigration;
 
 $app->get('/', Home::class . ':home');
 $app->get('/home', Home::class . ':home');
@@ -18,6 +19,7 @@ $app->group('/usuario', function (RouteCollectorProxy $group) {
     $group->get('/alterar/{id}', User::class . ':alterar');
     $group->post('/insert', User::class . ':insert');
     $group->post('/update', User::class . ':update');
+
+    
 });
-        /*
-*/
+        

@@ -6,11 +6,18 @@ use Phinx\Migration\AbstractMigration;
 
 final class Company extends AbstractMigration
 {
-   
     public function change(): void
     {
-        
-         $table = $this->table('payment_terms', ['id' => false, 'primary_key' => ['id']]);
-        $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false]);
+        $table = $this->table('empresa', ['id' => false,'primary_key' => ['id']]);
+        $table->addColumn('id', 'biginteger', ['identity' => true,'null' => false])->addColumn('razao_social', 'string', ['limit' => 150,'null' => false])
+            ->addColumn('nome_fantasia', 'string', ['limit' => 150,'null' => true])
+            ->addColumn('cnpj', 'string', ['limit' => 18,'null' => false])
+            ->addColumn('telefone', 'string', ['limit' => 20,'null' => true])
+            ->addColumn('email', 'string', ['limit' => 150,'null' => true])
+            ->addColumn('endereco', 'string', ['limit' => 255,'null' => true])
+            ->addColumn('ativo', 'boolean', ['default' => true])
+            ->addColumn('data_cadastro', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('data_atualizacao', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
+            ->create();
     }
 }
