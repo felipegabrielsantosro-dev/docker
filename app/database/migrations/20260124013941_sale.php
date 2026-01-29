@@ -8,12 +8,14 @@ final class Sale extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('payment_terms', ['id' => false,'primary_key' => ['id']]);
-        $table->addColumn('id', 'biginteger', ['identity' => true,'null' => true])
-            ->addColumn('description', 'string', ['limit' => 100,'null' => true])
-            ->addColumn('installments', 'integer', ['null' => true,'default' => 1])
-            ->addColumn('created_at', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('updated_at', 'datetime', ['null' => true])
+        $table = $this->table('sale', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
+            ->addColumn('id_usuario', 'biginteger', ['null' => true])
+            ->addColumn('valor_total', 'text', ['null' => true])
+            ->addColumn('ativo', 'boolean', ['null' => true])
+            ->addColumn('data_cadastro', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('data_atualizacao', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
+            ->addForeignKey('id_usuario', 'users', 'id', ['delete' => 'CASCADE', 'update' => 'NO ACTION'])
             ->create();
     }
 }

@@ -6,16 +6,16 @@ use Phinx\Migration\AbstractMigration;
 
 final class Supplier extends AbstractMigration
 {
+    
     public function change(): void
     {
-        $table = $this->table('fornecedor', ['id' => false,'primary_key' => ['id']]);
-        $table->addColumn('id', 'biginteger', ['identity' => true,'null' => false])
-            ->addColumn('nome', 'string', ['limit' => 150,'null' => true])
-            ->addColumn('cnpj', 'string', ['limit' => 18,'null' => true])
-            ->addColumn('telefone', 'string', ['limit' => 20,'null' => true])
-            ->addColumn('email', 'string', ['limit' => 150,'null' => true])
-            ->addColumn('endereco', 'string', ['limit' => 255,'null' => true])
-            ->addColumn('ativo', 'boolean', ['default' => true])
+        $table = $this->table('supplier', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
+            ->addColumn('nome_fantasia', 'text', ['null' => true])
+            ->addColumn('sobrenome_razao', 'text', ['null' => true])
+            ->addColumn('cpf_cnpj', 'text', ['null' => true])
+            ->addColumn('rg_ie', 'text', ['null' => true])
+            ->addColumn('ativo', 'boolean', ['null' => true])
             ->addColumn('data_cadastro', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('data_atualizacao', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->create();

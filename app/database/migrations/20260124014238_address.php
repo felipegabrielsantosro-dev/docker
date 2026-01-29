@@ -6,10 +6,9 @@ use Phinx\Migration\AbstractMigration;
 
 final class Address extends AbstractMigration
 {
-
     public function change(): void
     {
-         $table = $this->table('address', ['id' => false, 'primary_key' => ['id']]);
+        $table = $this->table('address', ['id' => false, 'primary_key' => ['id']]);
         $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
             ->addColumn('id_usuario', 'biginteger', ['null' => true])
             ->addColumn('titulo', 'text', ['null' => true])
