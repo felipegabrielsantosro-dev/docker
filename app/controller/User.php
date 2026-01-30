@@ -15,7 +15,7 @@ class User extends Base
                 'titulo' => 'Pesquisa de usuários'
             ];
             return $this->getTwig()
-                ->render($response, $this->setView('listuser'), $dadosTemplate)
+                ->render($response, $this->setView('listauser'), $dadosTemplate)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
         } catch (\Exception $e) {
@@ -98,5 +98,10 @@ class User extends Base
         } catch (\Exception $e) {
             return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
+    }
+     public function print($request, $response)
+    {
+        $html = $this->getHtml('reportuser.html');
+        return $this->printer($html);
     }
 }

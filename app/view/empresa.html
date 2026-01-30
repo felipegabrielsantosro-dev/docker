@@ -1,0 +1,121 @@
+{% extends "main.html" %}
+{% block main %}
+
+<div class="container my-4">
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex align-items-center gap-2">
+            <i class="fas fa-building"></i>
+            <h5 class="mb-0">Gerenciamento de Empresa</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form id="form">
+
+                <!-- AÇÃO -->
+                <input type="hidden" id="acao" name="acao" value="{{ acao }}">
+                <input type="hidden" id="id" name="id" value="{{ id }}">
+
+                <!-- NAV TABS -->
+                <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#dados" type="button">
+                            <i class="fas fa-info-circle"></i> Dados da Empresa
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#endereco" type="button">
+                            <i class="fas fa-map-marker-alt"></i> Endereço
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#contato" type="button">
+                            <i class="fas fa-phone"></i> Contato
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- TAB CONTENT -->
+                <div class="tab-content mt-3">
+
+                    <!-- DADOS -->
+                    <div class="tab-pane fade show active" id="dados">
+
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            <i class="fas fa-building"></i> Nome da Empresa
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                            placeholder="Digite o nome" required value="{{empresa.nome}}">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            <i class="fas fa-file-alt"></i> CNPJ
+                                        </label>
+                                        <input type="text" class="form-control" id="cnpj" name="cnpj"
+                                            placeholder="00.000.000/0000-00" required value="{{empresa.cnpj}}">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ENDEREÇO -->
+                    <div class="tab-pane fade" id="endereco">
+                        <div class="card border-0 shadow-sm p-4">
+                            <h5><i class="fas fa-map"></i> Dados do endereço</h5>
+
+                            <div class="row g-3 mt-3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTATO -->
+                    <div class="tab-pane fade" id="contato">
+                        <div class="card border-0 shadow-sm p-4">
+                            <h5><i class="fas fa-phone-alt"></i> Dados de contato</h5>
+
+                            <div class="row g-3 mt-3">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTÃO SALVAR -->
+                <div class="d-grid mt-4">
+                    <button class="btn btn-success btn-lg d-flex justify-content-center align-items-center gap-2"
+                        type="button" id="salvar">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% include "script.html" %}
+<script defer type="module" src="/js/empresa.js"></script>
+{% endblock %}

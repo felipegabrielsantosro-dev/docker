@@ -1,0 +1,65 @@
+import { Requests } from "./Requests.js";
+
+const tabela = new $('#tabela').DataTable({
+    paging: true,
+    lengthChange: true,
+    searching: true,
+    ordering: true,
+    info: true,
+    autoWidth: false,
+    responsive: true,
+    stateSave: true,
+    select: true,
+    processing: true,
+    serverSide: true,
+    language: {
+        url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json',
+        searchPlaceholder: 'Digite sua pesquisa...'
+    },
+    ajax: {
+        url: '/empresa/listaempresa',
+        type: 'POST'
+    }
+});
+
+// ================= DELETE =================
+async function Delete(id) {
+    document.getElementById('id').value = id;
+
+    const response = await Requests
+        .SetForm('form')
+        .Post('/empresa/delete');
+
+    if (!response.status) {
+        Swal.fire({
+            title: "Erro ao remover!",
+            icon: "error",
+            html: response.msg,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: () => Swal.showLoading()
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: "Removida com sucesso!",
+        icon: "success",
+        html: response.msg,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => Swal.showLoading()
+    });
+
+    tabela.ajax.reload();
+}
+
+// ================= EDITAR =================
+function Editar(id) {
+    // redireciona para a tela de edição da empresa
+    window.location.href = `/empresa/editar/${id}`;
+}
+
+// expõe as funções para o HTML
+window.Delete = Delete;
+window.Editar = Editar;

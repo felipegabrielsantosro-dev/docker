@@ -1,0 +1,148 @@
+{% extends "main.html" %}
+{% block main %}
+<div class="container my-4">
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex align-items-center gap-2">
+            <i class="fas fa-users"></i>
+            <h5 class="mb-0">Gerenciamento de Cliente</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form id="form">
+
+                <input type="hidden" id="acao" name="acao" value="{{ acao }}">
+                <input type="hidden" id="id" name="id" value="{{ id }}">
+
+                <!-- NAV TABS -->
+                <ul class="nav nav-pills mb-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#perfil" type="button">
+                            <i class="fas fa-user"></i> Dados Pessoais
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#endereco" type="button">
+                            <i class="fas fa-map-marker-alt"></i> Endereço
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link d-flex align-items-center gap-2" data-bs-toggle="tab"
+                            data-bs-target="#contato" type="button">
+                            <i class="fas fa-phone"></i> Contato
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- TAB CONTENT -->
+                <div class="tab-content mt-3">
+
+                    <!-- DADOS PESSOAIS -->
+                    <div class="tab-pane fade show active" id="perfil">
+
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label for="nome" class="form-label">
+                                            <i class="fas fa-user"></i> Nome completo
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome"
+                                            placeholder="Digite o nome" required value="{{cliente.nome}}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="cpf" class="form-label">
+                                            <i class="fas fa-id-card"></i> CPF
+                                        </label>
+                                        <input type="text" class="form-control" id="cpf" name="cpf"
+                                            placeholder="Digite o CPF" required value="{{cliente.cpf}}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="data_nascimento" class="form-label">
+                                            <i class="fas fa-calendar"></i> Data de nascimento
+                                        </label>
+                                        <input type="date" class="form-control" id="data_nascimento"
+                                            name="data_nascimento" value="{{cliente.data_nascimento}}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="sexo" class="form-label">
+                                            <i class="fas fa-restroom"></i> Sexo
+                                        </label>
+                                        <select id="sexo" name="sexo" class="form-select">
+                                            <option value="">Selecione</option>
+                                            <option value="M" {% if cliente.sexo == 'M' %} selected {% endif %}>Masculino</option>
+                                            <option value="F" {% if cliente.sexo == 'F' %} selected {% endif %}>Feminino</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3 d-flex align-items-center">
+                                        <div class="form-check mt-3">
+                                            <input class="form-check-input" type="checkbox" id="ativo" name="ativo"
+                                                {% if cliente.ativo %} checked {% endif %}>
+                                            <label class="form-check-label" for="ativo">
+                                                <i class="fas fa-check-circle text-success"></i> Ativo
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ENDEREÇO -->
+                    <div class="tab-pane fade" id="endereco">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTATO -->
+                    <div class="tab-pane fade" id="contato">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-body">
+
+                                <div class="row g-3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTÃO SALVAR -->
+                <div class="d-grid mt-4">
+                    <button class="btn btn-success btn-lg d-flex justify-content-center align-items-center gap-2"
+                        type="button" id="salvar">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+{% include "script.html" %}
+<script defer type="module" src="/js/cliente.js"></script>
+{% endblock %}
