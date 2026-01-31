@@ -5,10 +5,17 @@
             <span class="brand-text fw-light">Space X</span>
         </a>
     </div>
+
     <div class="sidebar-wrapper">
         <nav class="mt-2">
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="navigation"
-                aria-label="Main navigation" data-accordion="false" id="navigation">
+            <ul class="nav sidebar-menu flex-column"
+                data-lte-toggle="treeview"
+                role="navigation"
+                aria-label="Main navigation"
+                data-accordion="false"
+                id="navigation">
+
+                <!-- CADASTROS -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="bi bi-plus"></i>
@@ -17,6 +24,7 @@
                             <i class="nav-arrow bi bi-chevron-right"></i>
                         </p>
                     </a>
+
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="/usuario/lista" class="nav-link">
@@ -24,26 +32,52 @@
                                 <p>Usuário</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="/cliente/lista" class="nav-link">
                                 <i class="bi bi-person-badge-fill"></i>
                                 <p>Cliente</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="/fornecedor/lista" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="bi bi-circle"></i>
                                 <p>Fornecedor</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="/empresa/lista" class="nav-link">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="bi bi-circle"></i>
                                 <p>Empresa</p>
                             </a>
                         </li>
                     </ul>
                 </li>
+
+                <!-- PAGAMENTOS -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-cash-stack"></i>
+                        <p>
+                        Condição De Pagamentos
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/pagamento/lista" class="nav-link">
+                                <i class="bi bi-receipt"></i>
+                                <p>Tabela de Pagamentos</p>
+                            </a>
+                        </li>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
         </nav>
     </div>

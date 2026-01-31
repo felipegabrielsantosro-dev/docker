@@ -57,7 +57,7 @@ async function insert() {
     });
 }
 async function update() {
-    /*//Valida todos os campos do formulário
+    //Valida todos os campos do formulário
     const IsValid = Validate
         .SetForm('form')//Inform o ID do form
         .Validate();//Aplica a validação no campos 
@@ -74,7 +74,7 @@ async function update() {
         });
         //Em caso de erro encerramos o processo.
         return;
-    }*/
+    }
     const response = await Requests.SetForm('form').Post('/fornecedor/update');
     if (!response.status) {
         Swal.fire({

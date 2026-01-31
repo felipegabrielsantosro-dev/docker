@@ -1,41 +1,52 @@
 {% extends "main.html" %}
+
 {% block main %}
 <form id="form">
     <input type="hidden" id="id" name="id">
+
     <div class="container my-4">
         <div class="card shadow-sm border-0">
+
+            <!-- HEADER -->
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 d-flex align-items-center gap-2">
-                    <i class="fas fa-building"></i> Lista de Empresas
+                    <i class="fas fa-cash-register"></i> Lista de Pagamentos
                 </h5>
 
-                <a href="/empresa/cadastro" class="btn btn-success d-flex align-items-center gap-2">
-                    <i class="fas fa-plus"></i> Cadastrar
+                <a href="/pagamento/cadastro" class="btn btn-success d-flex align-items-center gap-2">
+                    <i class="fas fa-plus-circle"></i> Cadastrar
                 </a>
-                 <a href="/empresa/print" target="_blank" class="btn btn-info">Imprimir</a>
             </div>
 
+            <!-- BODY -->
             <div class="card-body">
                 <table class="table table-hover align-middle" id="tabela">
                     <thead class="table-light">
                         <tr>
                             <th><i class="fas fa-hashtag"></i> Código</th>
-                            <th><i class="fas fa-building"></i> Razão Social</th>
-                            <th><i class="fas fa-id-card"></i> CNPJ</th>
-                            <th><i class="fas fa-map-marker-alt"></i> Cidade</th>
+                            <th><i class="fas fa-user"></i> Cliente</th>
+                            <th><i class="fas fa-money-bill-wave"></i> Valor</th>
+                            <th><i class="fas fa-calendar-alt"></i> Data</th>
+                            <th><i class="fas fa-credit-card"></i> Forma</th>
                             <th><i class="fas fa-check-circle"></i> Status</th>
-                            <th class="text-center"><i class="fas fa-cogs"></i> Ações</th>
+                            <th class="text-center">
+                                <i class="fas fa-cogs"></i> Ações
+                            </th>
                         </tr>
                     </thead>
+
                     <tbody>
+                        {# Preenchido via JS #}
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </form>
 {% endblock %}
+
 {% block script %}
 {% include "script.html" %}
-<script defer type="module" src="/js/listaempresa.js"></script>
+<script defer type="module" src="/js/listpaymentterms.js"></script>
 {% endblock %}
