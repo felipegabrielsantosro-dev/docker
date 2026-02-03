@@ -8,7 +8,7 @@ final class PaymentTerms extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('condicao_pagamento', ['id' => false,'primary_key' => ['id']]);
+        $table = $this->table('PaymentTerms', ['id' => false,'primary_key' => ['id']]);
          $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
             ->addColumn('codigo', 'text', ['null' => true])
             ->addColumn('titulo', 'text', ['null' => true])

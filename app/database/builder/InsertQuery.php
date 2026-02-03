@@ -4,6 +4,7 @@ namespace app\database\builder;
 
 use app\database\Connection;
 
+
 class InsertQuery
 {
     private string $table;

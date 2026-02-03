@@ -1,6 +1,6 @@
 import { Requests } from "./Requests.js";
 
-const tabela = new $('#tabela').DataTable({
+const tabela = $('#tabela').DataTable({
     paging: true,
     lengthChange: true,
     searching: true,
@@ -9,17 +9,68 @@ const tabela = new $('#tabela').DataTable({
     autoWidth: false,
     responsive: true,
     stateSave: true,
-    select: true,
     processing: true,
     serverSide: true,
+    select: true,
+
     language: {
         url: 'https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json',
         searchPlaceholder: 'Digite sua pesquisa...'
     },
+
     ajax: {
-        url: '/usuario/listauser',
+        url: '/paymentterms/lista-json',
         type: 'POST'
-    }
+    },
+
+    columns: [
+        {
+            data: 'id',
+            name: 'id',
+            width: '60px'
+        },
+        {
+            data: 'valor',
+            name: 'valor',
+            className: 'text-end',
+            render: data => `R$ ${Number(data).toFixed(2)}`
+        },
+        {
+            data: 'parcelas',
+            name: 'parcelas',
+            className: 'text-center'
+        },
+        {
+            data: 'data',
+            name: 'data',
+            render: data =>
+                new Date(data).toLocaleDateString('pt-BR')
+        },
+        {
+            data: 'status',
+            name: 'status',
+            className: 'text-center',
+            render: data => `
+                <span class="badge ${data ? 'bg-success' : 'bg-danger'}">
+                    ${data ? 'Ativo' : 'Inativo'}
+                </span>
+            `
+        },
+        {
+            data: 'id',
+            orderable: false,
+            searchable: false,
+            className: 'text-center',
+            render: id => `
+                <button class="btn btn-sm btn-primary me-1" onclick="Editar(${id})">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="Delete(${id})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `
+        }
+    ]
 });
 
 // ================= DELETE =================
@@ -35,9 +86,8 @@ async function Delete(id) {
             title: "Erro ao remover!",
             icon: "error",
             html: response.msg,
-            timer: 1000,
-            timerProgressBar: true,
-            didOpen: () => Swal.showLoading()
+            timer: 1200,
+            timerProgressBar: true
         });
         return;
     }
@@ -47,19 +97,17 @@ async function Delete(id) {
         icon: "success",
         html: response.msg,
         timer: 1000,
-        timerProgressBar: true,
-        didOpen: () => Swal.showLoading()
+        timerProgressBar: true
     });
 
-    tabela.ajax.reload();
+    tabela.ajax.reload(null, false);
 }
 
 // ================= EDITAR =================
 function Editar(id) {
-    // redireciona para a tela de edição
     window.location.href = `/paymentterms/alterar/${id}`;
 }
 
-// expõe as funções para o HTML
+// expõe para o HTML
 window.Delete = Delete;
 window.Editar = Editar;

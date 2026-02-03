@@ -1,30 +1,45 @@
-const forma = document.getElementById('forma_pagamento');
-const grupoParcelas = document.getElementById('grupoParcelas');
-const grupoValorParcela = document.getElementById('grupoValorParcela');
-const valor = document.getElementById('valor');
-const parcelas = document.getElementById('parcelas');
-const valorParcela = document.getElementById('valor_parcela');
+import { Requests } from "./Requests.js";
+const insertPaymentoTermsButton = document.getElementById('insertPaymentoTermsButton');
+const insertInstallmentButton = document.getElementById('insertInstallmentButton');
+const Action = document.getElementById('acao');
+async function insertPaymentTerms() {
+    try {
+        const response = (Action.value === 'c') ?
+            await Requests.SetForm('form').Post('/pagamento/insert')
+            :
+            await Requests.SetForm('form').Post('/pagamento/update');
+        if (!response.status) {
+            Swal.fire({
+                icon: "error",
+                title: "Restrição",
+                text: response.msg,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+        Swal.fire({
+            icon: "success",
+            title: "Sucesso",
+            text: response.msg,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        }).then((result) => {
 
-forma.addEventListener('change', () => {
-    if (forma.value === 'credito' || forma.value === 'boleto') {
-        grupoParcelas.classList.remove('d-none');
-        grupoValorParcela.classList.remove('d-none');
-    } else {
-        grupoParcelas.classList.add('d-none');
-        grupoValorParcela.classList.add('d-none');
-        parcelas.value = 1;
-        valorParcela.value = '';
-    }
-});
-
-function calcularParcela() {
-    if (valor.value && parcelas.value) {
-        valorParcela.value = 
-            (parseFloat(valor.value) / parseInt(parcelas.value))
-            .toFixed(2)
-            .replace('.', ',');
+        });
+    } catch (error) {
+        console.log(error)
     }
 }
 
-valor.addEventListener('input', calcularParcela);
-parcelas.addEventListener('change', calcularParcela);
+insertPaymentoTermsButton.addEventListener('click', async () => {
+    await insertPaymentTerms();
+});
+insertInstallmentButton.addEventListener('click', async () => {
+    alert('Inserir parcelamento');
+});

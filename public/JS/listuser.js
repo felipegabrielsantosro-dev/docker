@@ -17,49 +17,37 @@ const tabela = new $('#tabela').DataTable({
         searchPlaceholder: 'Digite sua pesquisa...'
     },
     ajax: {
-        url: '/usuario/listauser',
+        url: '/usuario/listuser',
         type: 'POST'
     }
 });
 
-// ================= DELETE =================
 async function Delete(id) {
     document.getElementById('id').value = id;
-
-    const response = await Requests
-        .SetForm('form')
-        .Post('/usuario/delete');
-
+    const response = await Requests.SetForm('form').Post('/usuario/delete');
     if (!response.status) {
         Swal.fire({
             title: "Erro ao remover!",
             icon: "error",
             html: response.msg,
-            timer: 1000,
+            timer: 3000,
             timerProgressBar: true,
-            didOpen: () => Swal.showLoading()
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
         return;
     }
-
     Swal.fire({
         title: "Removido com sucesso!",
         icon: "success",
         html: response.msg,
-        timer: 1000,
+        timer: 3000,
         timerProgressBar: true,
-        didOpen: () => Swal.showLoading()
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-
     tabela.ajax.reload();
 }
-
-// ================= EDITAR =================
-function Editar(id) {
-    // redireciona para a tela de edição
-    window.location.href = `/usuario/editar/${id}`;
-}
-
-// expõe as funções para o HTML
 window.Delete = Delete;
-window.Editar = Editar;

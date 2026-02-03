@@ -8,8 +8,8 @@ final class Company extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('empresa', ['id' => false,'primary_key' => ['id']]);
-         $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
+        $table = $this->table('company', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'biginteger', ['identity' => true, 'null' => false])
             ->addColumn('nome_fantasia', 'text', ['null' => true])
             ->addColumn('sobrenome_razao', 'text', ['null' => true])
             ->addColumn('cpf_cnpj', 'text', ['null' => true])

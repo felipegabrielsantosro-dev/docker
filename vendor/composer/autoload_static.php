@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
+class ComposerStaticInitbf68d8854daebaf5f16b734d9035dda4
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -1349,6 +1349,7 @@ class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
         'Twig\\ExpressionParser\\InfixExpressionParserInterface' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/InfixExpressionParserInterface.php',
         'Twig\\ExpressionParser\\Infix\\ArgumentsTrait' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/ArgumentsTrait.php',
         'Twig\\ExpressionParser\\Infix\\ArrowExpressionParser' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/ArrowExpressionParser.php',
+        'Twig\\ExpressionParser\\Infix\\AssignmentExpressionParser' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/AssignmentExpressionParser.php',
         'Twig\\ExpressionParser\\Infix\\BinaryOperatorExpressionParser' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/BinaryOperatorExpressionParser.php',
         'Twig\\ExpressionParser\\Infix\\ConditionalTernaryExpressionParser' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/ConditionalTernaryExpressionParser.php',
         'Twig\\ExpressionParser\\Infix\\DotExpressionParser' => __DIR__ . '/..' . '/twig/twig/src/ExpressionParser/Infix/DotExpressionParser.php',
@@ -1434,10 +1435,15 @@ class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
         'Twig\\Node\\Expression\\Binary\\MulBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/MulBinary.php',
         'Twig\\Node\\Expression\\Binary\\NotEqualBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/NotEqualBinary.php',
         'Twig\\Node\\Expression\\Binary\\NotInBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/NotInBinary.php',
+        'Twig\\Node\\Expression\\Binary\\NotSameAsBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/NotSameAsBinary.php',
         'Twig\\Node\\Expression\\Binary\\NullCoalesceBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/NullCoalesceBinary.php',
+        'Twig\\Node\\Expression\\Binary\\ObjectDestructuringSetBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/ObjectDestructuringSetBinary.php',
         'Twig\\Node\\Expression\\Binary\\OrBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/OrBinary.php',
         'Twig\\Node\\Expression\\Binary\\PowerBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/PowerBinary.php',
         'Twig\\Node\\Expression\\Binary\\RangeBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/RangeBinary.php',
+        'Twig\\Node\\Expression\\Binary\\SameAsBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SameAsBinary.php',
+        'Twig\\Node\\Expression\\Binary\\SequenceDestructuringSetBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SequenceDestructuringSetBinary.php',
+        'Twig\\Node\\Expression\\Binary\\SetBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SetBinary.php',
         'Twig\\Node\\Expression\\Binary\\SpaceshipBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SpaceshipBinary.php',
         'Twig\\Node\\Expression\\Binary\\StartsWithBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/StartsWithBinary.php',
         'Twig\\Node\\Expression\\Binary\\SubBinary' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Binary/SubBinary.php',
@@ -1446,6 +1452,7 @@ class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
         'Twig\\Node\\Expression\\CallExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/CallExpression.php',
         'Twig\\Node\\Expression\\ConditionalExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/ConditionalExpression.php',
         'Twig\\Node\\Expression\\ConstantExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/ConstantExpression.php',
+        'Twig\\Node\\Expression\\EmptyExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/EmptyExpression.php',
         'Twig\\Node\\Expression\\FilterExpression' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/FilterExpression.php',
         'Twig\\Node\\Expression\\Filter\\DefaultFilter' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Filter/DefaultFilter.php',
         'Twig\\Node\\Expression\\Filter\\RawFilter' => __DIR__ . '/..' . '/twig/twig/src/Node/Expression/Filter/RawFilter.php',
@@ -1579,6 +1586,8 @@ class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
         'app\\controller\\Fornecedor' => __DIR__ . '/../..' . '/app/controller/Fornecedor.php',
         'app\\controller\\Home' => __DIR__ . '/../..' . '/app/controller/Home.php',
         'app\\controller\\Login' => __DIR__ . '/../..' . '/app/controller/Login.php',
+        'app\\controller\\PaymentTerms' => __DIR__ . '/../..' . '/app/controller/PaymentTerms.php',
+        'app\\controller\\Sale' => __DIR__ . '/../..' . '/app/controller/Sale.php',
         'app\\controller\\User' => __DIR__ . '/../..' . '/app/controller/User.php',
         'app\\database\\builder\\DeleteQuery' => __DIR__ . '/../..' . '/app/database/builder/DeleteQuery.php',
         'app\\database\\builder\\InsertQuery' => __DIR__ . '/../..' . '/app/database/builder/InsertQuery.php',
@@ -1592,9 +1601,9 @@ class ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitb3788fec971955cbab9eb2f07d1eca8c::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitbf68d8854daebaf5f16b734d9035dda4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitbf68d8854daebaf5f16b734d9035dda4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitbf68d8854daebaf5f16b734d9035dda4::$classMap;
 
         }, null, ClassLoader::class);
     }

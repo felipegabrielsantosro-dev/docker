@@ -62,7 +62,10 @@ $app->group('/fornecedor', function (RouteCollectorProxy $group) {
     $group->post('/delete', Fornecedor::class . ':delete');
 });
 
-$app->group('/pagamento', function (RouteCollectorProxy $group) {
+$app->group('/PaymentTerms', function (RouteCollectorProxy $group) {
     $group->get('/lista', PaymentTerms::class . ':lista'); #->add(Middleware::authentication());
     $group->get('/cadastro', PaymentTerms::class . ':cadastro'); #->add(Middleware::authentication());
+    $group->post('/alterar/{id}', PaymentTerms::class . ':alterar'); #->add(Middleware::authentication());
+    $group->post('/insert', PaymentTerms::class . ':insert'); #->add(Middleware::authentication());
+    
 });
