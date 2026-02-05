@@ -2,7 +2,7 @@ import { Validate } from "./Validate.js";
 import { Requests } from "./Requests.js";
 
 const Salvar = document.getElementById('salvar');
-const FieldPassword = document.getElementById('campo_senha');
+const FieldPassword = document.getElementById('senha');
 const Action = document.getElementById('acao');
 
 $('#cpf').inputmask({ "mask": ["999.999.999-99", "99.999.999/9999-99"] });

@@ -6,6 +6,7 @@ use app\database\builder\InsertQuery;
 use app\database\builder\DeleteQuery;
 use app\database\builder\SelectQuery;
 
+
 class Cliente extends Base
 {
     public function lista($request, $response)

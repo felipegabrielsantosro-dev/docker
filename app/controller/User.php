@@ -5,6 +5,8 @@ namespace app\controller;
 use app\database\builder\SelectQuery;
 use app\database\builder\InsertQuery;
 use app\database\builder\UpdateQuery;
+use app\database\builder\DeleteQuery;
+
 
 class User extends Base
 {
@@ -104,4 +106,32 @@ class User extends Base
         $html = $this->getHtml('reportuser.html');
         return $this->printer($html);
     }
+    public function delete($request, $response)
+{
+    try {
+        $id = $_POST['id'];
+
+        $IsDelete = DeleteQuery::table('product')
+            ->where('id', '=', $id)
+            ->delete();
+
+        if (!$IsDelete) {
+            echo json_encode([
+                'status' => false,
+                'msg' => 'Erro ao remover'
+            ]);
+            die;
+        }
+
+        echo json_encode([
+            'status' => true,
+            'msg' => 'Produto removido com sucesso!'
+        ]);
+        die;
+
+    } catch (\Throwable $th) {
+        echo json_encode(['status' => false, 'msg' => $th->getMessage()]);
+        die;
+    }
+}
 }

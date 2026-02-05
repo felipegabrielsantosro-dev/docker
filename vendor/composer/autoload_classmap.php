@@ -1278,6 +1278,7 @@ return array(
     'app\\controller\\Home' => $baseDir . '/app/controller/Home.php',
     'app\\controller\\Login' => $baseDir . '/app/controller/Login.php',
     'app\\controller\\PaymentTerms' => $baseDir . '/app/controller/PaymentTerms.php',
+    'app\\controller\\Produto' => $baseDir . '/app/controller/Produto.php',
     'app\\controller\\Sale' => $baseDir . '/app/controller/Sale.php',
     'app\\controller\\User' => $baseDir . '/app/controller/User.php',
     'app\\database\\builder\\DeleteQuery' => $baseDir . '/app/database/builder/DeleteQuery.php',
