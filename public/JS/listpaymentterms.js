@@ -73,6 +73,7 @@ const tabela = $('#tabela').DataTable({
     ]
 });
 
+
 // ================= DELETE =================
 async function Delete(id) {
     document.getElementById('id').value = id;

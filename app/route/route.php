@@ -79,6 +79,11 @@ $app->group('/fornecedor', function (RouteCollectorProxy $group) {
 $app->group('/produto', function (RouteCollectorProxy $group) {
         $group->get('/lista',Produto::class . ':lista');
         $group->get('/cadastro',Produto::class . ':cadastro');
+        $group->get('/alterar/{id}',Produto::class . ':alterar');
+        $group->post('/insert',Produto::class . ':insert');
+        $group->post('/update',Produto::class . ':update');
+        $group->post('/delete',Produto::class . ':delete');
+        
 });
 
 $app->group('/pagamento', function (RouteCollectorProxy $group) {
@@ -87,6 +92,8 @@ $app->group('/pagamento', function (RouteCollectorProxy $group) {
     $group->get('/alterar/{id}', PaymentTerms::class . ':alterar');
     $group->post('/insert', PaymentTerms::class . ':insert');
     $group->post('/insertinstallment', PaymentTerms::class . ':insertInstallment');
+    $group->post('/loaddatainstallments', PaymentTerms::class . ':loaddataInstallments');
+
 });
 $app->group('/logout', function (RouteCollectorProxy $group) {
     $group->get('', Login::class . ':logout'); #->add(Auth::route());
