@@ -47,4 +47,18 @@
 {% block script %}
 {% include "script.html" %}
 <script defer type="module" src="/js/listaproduto.js"></script>
+<script>
+// Função para imprimir a tabela
+function imprimirTabela() {
+    const tabelaConteudo = document.getElementById('tabela-container').innerHTML;
+    const janela = window.open('', '', 'width=900,height=600');
+    janela.document.write('<html><head><title>Imprimir Tabela</title>');
+    janela.document.write('<link rel="stylesheet" href="/path/to/bootstrap.min.css">'); // se quiser o estilo
+    janela.document.write('</head><body>');
+    janela.document.write(tabelaConteudo);
+    janela.document.write('</body></html>');
+    janela.document.close();
+    janela.print();
+}
+</script>
 {% endblock %}

@@ -3,7 +3,7 @@
         'name' => 'root/nginx',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '2ef8881637614929dc17831fc118083fdf06b347',
+        'reference' => 'b548aa93b33773ddcaf899251d7265527d923875',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -248,7 +248,7 @@
         'root/nginx' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '2ef8881637614929dc17831fc118083fdf06b347',
+            'reference' => 'b548aa93b33773ddcaf899251d7265527d923875',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

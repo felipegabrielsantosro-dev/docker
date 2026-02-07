@@ -5,7 +5,7 @@ namespace app\controller;
 use app\database\builder\InsertQuery;
 use app\database\builder\DeleteQuery;
 use app\database\builder\SelectQuery;
-
+use app\database\builder\UpdateQuery;
 
 class Cliente extends Base
 {
@@ -13,76 +13,83 @@ class Cliente extends Base
     {
         try {
             $dadosTemplate = [
-                'titulo' => 'Lista de Clientes'
+                'titulo' => 'Página inicial'
             ];
-
             return $this->getTwig()
-                ->render($response, $this->setView('listacliente'), $dadosTemplate)
+                ->render($response, $this->setView('listcliente'), $dadosTemplate)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
-
         } catch (\Exception $e) {
-            echo "Erro: " . $e->getMessage();
         }
     }
     public function cadastro($request, $response)
     {
         try {
             $dadosTemplate = [
-                'titulo' => 'Cadastro de Cliente'
+                'acao' => 'c',
+                'titulo' => 'Cadastro'
             ];
-
             return $this->getTwig()
                 ->render($response, $this->setView('cliente'), $dadosTemplate)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
-
         } catch (\Exception $e) {
-            echo "Erro: " . $e->getMessage();
+            var_dump($e);
         }
     }
     public function insert($request, $response)
     {
         try {
-            $nome      = $_POST['nome'] ?? null;
-            $sobrenome = $_POST['sobrenome'] ?? null;
-            $cpf       = $_POST['cpf'] ?? null;
-            $rg        = $_POST['rg'] ?? null;
-
-            $FieldsAndValues = [
-                'nome_completo'   => $nome_completo = $nome . ' ' . $sobrenome,
-                'cpf_cnpj'        => $cpf,
-                'rg_ie'           => $rg,
+            $form = $request->getParsedBody();
+            $FieldAndValues = [
+                'nome_fantasia' => $form['nome_fantasia'],
+                'sobrenome_razao' => $form['sobrenome_razao'],
+                'cpf_cnpj' => $form['cpf_cnpj'],
+                'rg_ie' => $form['rg_ie'],
+                'ativo' => $form['ativo']
             ];
-
-            $IsSave = InsertQuery::table('cliente')->save($FieldsAndValues);
-
+            $IsSave = InsertQuery::table('customer')->save($FieldAndValues);
             if (!$IsSave) {
-                echo 'Erro ao salvar';
-                die;
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $IsSave, 'id' => 0], 403);
             }
-
-            echo "Salvo com sucesso!";
-            die;
-
-        } catch (\Throwable $th) {
-            echo "Erro: " . $th->getMessage();
-            die;
+            $customer = SelectQuery::select('id')->from('customer')->order('id', 'desc')->fetch();
+            return $this->SendJson($response, ['status' => true, 'msg' => 'Salvo com sucesso', 'id' => $customer['id']], 201);
+        } catch (\Exception $e) {
+            return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
     }
-    public function Delete($request, $response)
+    public function alterar($request, $response, $args)
+    {
+        try {
+            $id = $args['id'];
+            $customer = SelectQuery::select()->from('customer')->where('id', '=', $id)->fetch();
+            $dadosTemplate = [
+                'acao' => 'e',
+                'id' => $id,
+                'titulo' => 'Cadastro e edição',
+                'customer' => $customer
+            ];
+            return $this->getTwig()
+                ->render($response, $this->setView('cliente'), $dadosTemplate)
+                ->withHeader('Content-Type', 'text/html')
+                ->withStatus(200);
+        } catch (\Exception $e) {
+            var_dump($e);
+        }
+    }
+    public function delete($request, $response)
     {
         try {
             $id = $_POST['id'];
-            $IsDelete = DeleteQuery::table('cliente')
+            $IsDelete = DeleteQuery::table('customer')
                 ->where('id', '=', $id)
                 ->delete();
 
             if (!$IsDelete) {
-                echo json_encode(['status' => false, 'msg' => $IsDelete, 'id' => $id]);
+                echo 'Erro ao deletar';
                 die;
             }
-            echo json_encode(['status' => true, 'msg' => 'Removido com sucesso!', 'id' => $id]);
+            echo "Deletado com sucesso!";
             die;
         } catch (\Throwable $th) {
             echo "Erro: " . $th->getMessage();
@@ -91,52 +98,50 @@ class Cliente extends Base
     }
     public function listcliente($request, $response)
     {
+        #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
         $form = $request->getParsedBody();
-
-        # Campos e ordenação
-        $order     = $form['order'][0]['column'];
+        #Qual a coluna da tabela deve ser ordenada.
+        $order = $form['order'][0]['column'];
+        #Tipo de ordenação
         $orderType = $form['order'][0]['dir'];
-        $start     = $form['start'];
-        $length    = $form['length'];
-
+        #Em qual registro se inicia o retorno dos registros, OFFSET
+        $start = $form['start'];
+        #Limite de registro a serem retornados do banco de dados LIMIT
+        $length = $form['length'];
         $fields = [
             0 => 'id',
-            1 => 'nome_completo',
-            2 => 'cpf_cnpj',
-            3 => 'rg_ie'
+            1 => 'nome_fantasia',
+            2 => 'sobrenome_razao',
+            3 => 'cpf_cnpj',
+            4 => 'rg_ie',
+            5 => 'ativo',
         ];
-
+        #Capturamos o nome do campo a ser odernado.
         $orderField = $fields[$order];
-        $term       = $form['search']['value'];
-
-        # Query base
-        $query = SelectQuery::select('id,nome_completo,cpf_cnpj,rg_ie')
-            ->from('cliente');
-
-        # Filtro
-        if (!is_null($term) && $term !== '') {
-            $query->where('nome_completo', 'ilike', "%{$term}%", 'or')
+        #O termo pesquisado
+        $term = $form['search']['value'];
+        $query = SelectQuery::select('id,nome_fantasia,sobrenome_razao,cpf_cnpj,rg_ie,ativo')->from('customer');
+        if (!is_null($term) && ($term !== '')) {
+            $query->where('nome_fantasia', 'ilike', "%{$term}%", 'or')
+                ->where('sobrenome_razao', 'ilike', "%{$term}%", 'or')
                 ->where('cpf_cnpj', 'ilike', "%{$term}%", 'or')
-                ->where('rg_ie', 'ilike', "%{$term}%");
+                ->where('rg_ie', 'ilike', "%{$term}%", 'or')
+                ->where('ativo', 'ilike', "%{$term}%");
         }
-
-        # Paginação + ordenação
-        $clients = $query
+        $$customer = $query
             ->order($orderField, $orderType)
             ->limit($length, $start)
             ->fetchAll();
-
-        # Monta array nos padrões DataTables
-        $clientsData = [];
-
-        foreach ($clients as $key => $value) {
-            $clientsData[$key] = [
+        $$customerData = [];
+        foreach ($$customer as $key => $value) {
+            $$customerData[$key] = [
                 $value['id'],
-                $value['nome_completo'],
+                $value['nome_fantasia'],
+                $value['sobrenome_razao'],
                 $value['cpf_cnpj'],
                 $value['rg_ie'],
-
-                "<a href=\"/cliente/editar/" . $value['id'] . "\" class=\"btn btn-warning\">Editar</a>
+                $value['ativo'] ? 'Sim' : 'Não',
+                "<a href=\"/cliente/alterar/" . $value['id'] . "\" class=\"btn btn-warning\"><i class=\"fa-solid fa-pen-to-square\"></i>Alterar</a>
 
                 <button type='button'  onclick='Delete(" . $value['id'] . ");' class='btn btn-danger'>
                  <i class=\"bi bi-trash-fill\"></i>
@@ -144,15 +149,12 @@ class Cliente extends Base
                  </button>"
             ];
         }
-
-        # Resposta
         $data = [
-            'status'          => true,
-            'recordsTotal'    => count($clients),
-            'recordsFiltered' => count($clients),
-            'data'            => $clientsData
+            'status' => true,
+            'recordsTotal' => count($$customer),
+            'recordsFiltered' => count($$customer),
+            'data' => $$customerData
         ];
-
         $payload = json_encode($data);
 
         $response->getBody()->write($payload);
@@ -161,28 +163,59 @@ class Cliente extends Base
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
     }
-     public function alterar($request, $response, $args)
+    public function update($request, $response)
     {
         try {
-            $id = $args['id'];
-            $user = SelectQuery::select()->from('usuario')->where('id', '=', $id)->fetch();
-            $dadosTemplate = [
-                'acao' => 'e',
-                'id' => $id,
-                'titulo' => 'Cadastro e edição',
-                'user' => $user
+            $form = $request->getParsedBody();
+            $id = $form['id'];
+            if (is_null($id) || empty($id)) {
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Por favor informe o ID', 'id' => 0], 500);
+            }
+            $FieldAndValues = [
+                'nome_fantasia' => $form['nome_fantasia'],
+                'sobrenome_razao' => $form['sobrenome_razao'],
+                'cpf_cnpj' => $form['cpf_cnpj'],
+                'rg_ie' => $form['rg_ie'],
+                'ativo' => $form['ativo'],
             ];
-            return $this->getTwig()
-                ->render($response, $this->setView('user'), $dadosTemplate)
-                ->withHeader('Content-Type', 'text/html')
-                ->withStatus(200);
+            $IsUpdate = UpdateQuery::table('customer')->set($FieldAndValues)->where('id', '=', $id)->update();
+            if (!$IsUpdate) {
+                return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $IsUpdate, 'id' => 0], 403);
+            }
+            return $this->SendJson($response, ['status' => true, 'msg' => 'Atualizado com sucesso!', 'id' => $id]);
         } catch (\Exception $e) {
-            var_dump($e);
+            return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
     }
-     public function print($request, $response)
-    {
-        $html = $this->getHtml('reportcliente.html');
-        return $this->printer($html);
+    public function print($request, $response)
+{
+    try {
+        // Busca todos os clientes usando sua SelectQuery
+        // Selecionei as colunas baseadas no que o seu HTML original pedia
+        $$customer = SelectQuery::select('id, nome_fantasia, sobrenome_razao, cpf_cnpj, rg_ie')
+            ->from('customer')
+            ->order('nome_fantasia', 'ASC')
+            ->order('sobrenome_razao', 'ASC')
+            ->order('cpf_cnpj', 'ASC')
+            ->order('rg_ie', 'ASC')
+            ->fetchAll();
+
+        $dadosTemplate = [
+            'titulo'   => 'Relatório de Clientes',
+            'clientes' => $$customer,
+            'total'    => count($customer)
+        ];
+
+        // Renderiza o template passando os dados
+        // Nota: Certifique-se que o método render do seu Base aceita esses parâmetros
+        return $this->getTwig()
+    ->render($response, $this->setView('reports/reportcliente'), $dadosTemplate)
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(200);
+
+    } catch (\Exception $e) {
+        $response->getBody()->write("Erro ao gerar relatório: " . $e->getMessage());
+        return $response->withStatus(500);
     }
+}
 }

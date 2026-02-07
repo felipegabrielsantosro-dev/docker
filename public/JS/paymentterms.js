@@ -88,7 +88,7 @@ function adicionarParcela() {
             <td>${contadorParcelas}</td>
             <td>${quantidade}</td>
             <td>${intervalo}</td>
-            <td>${alterarVencimento || 0}</td>
+            <td>${alterarVencimento || 0}(Dias)</td>
             <td>
                 <button type="button" class="btn btn-danger btn-sm btnRemoverParcela">Excluir</button>
             </td>
@@ -109,7 +109,7 @@ function adicionarParcela() {
     $('#alterar_vencimento').val('');
 }
 
-function carregarParcelasExistentes() {
+function loadExistingInstallments() {
     const linhas = $('#tabelaParcelas tr');
     if (linhas.length > 0) {
         linhas.each(function() {
@@ -240,4 +240,3 @@ async function deleteInstallment(id) {
         console.log(error);
     }
 }
- 

@@ -5,6 +5,7 @@ namespace app\controller;
 use app\database\builder\InsertQuery;
 use app\database\builder\DeleteQuery;
 use app\database\builder\SelectQuery;
+use app\database\builder\UpdateQuery;
 
 
 
@@ -108,9 +109,6 @@ class Produto extends Base
         die;
     }
 }
-
-
-    
    public function listproduto($request, $response)
 {
     $form = $request->getParsedBody();
@@ -180,7 +178,6 @@ class Produto extends Base
         ->withHeader('Content-Type', 'application/json')
         ->withStatus(200);
 }
-
     public function print($request, $response)
     {
         $html = $this->getHtml('reportproduto.html');
@@ -232,7 +229,7 @@ class Produto extends Base
             'data_atualizacao' => date('Y-m-d H:i:s')
         ];
 
-        $IsUpdate = \app\database\builder\UpdateQuery::table('product')
+        $IsUpdate = \app\database\builder\UpdateQuery::table('produto')
             ->where('id', '=', $id)
             ->update($FieldsAndValues);
 
