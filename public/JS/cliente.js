@@ -100,8 +100,10 @@ async function update() {
         }
     });
 }
-Salvar.addEventListener('click', async () => {
+document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
     (Action.value === 'c') ? await insert() : await update();
+
 
     const ativoInput = document.getElementById('ativo');
     const dados = {

@@ -12,7 +12,7 @@ class Sale extends Base
         return $this->getTwig()
             ->render($response, $this->setView('sale'), $dadosTemplate)
             ->withHeader('Content-Type', 'text/html')
-            ->withStatus(200);
+            ->withStatus(200); 
     }
     public function lista($request, $response)
     {
