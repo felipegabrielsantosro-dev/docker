@@ -1,5 +1,3 @@
-// Sistema de Vendas - JavaScript
-
 // Atualizar relógio em tempo real
 function updateClock() {
     const now = new Date();
@@ -29,11 +27,9 @@ function updateClock() {
         dateElement.textContent = `${dayName}, ${day} De ${month} De ${year}`;
     }
 }
-
 // Atualizar a cada segundo
 setInterval(updateClock, 1000);
 updateClock();
-
 // Event Listeners para botões de adicionar
 document.addEventListener('DOMContentLoaded', function () {
     // Botões de adicionar produto
@@ -157,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-
 // Atalhos de teclado
 document.addEventListener('keydown', function (e) {
     // F2 - Focar no campo de busca
@@ -165,20 +160,17 @@ document.addEventListener('keydown', function (e) {
         e.preventDefault();
         document.querySelector('.search-input')?.focus();
     }
-
     // F9 - Finalizar venda
     if (e.key === 'F9') {
         e.preventDefault();
         document.querySelector('.btn-finalize')?.click();
     }
-
     // Esc - Cancelar venda
     if (e.key === 'Escape') {
         e.preventDefault();
         document.querySelector('.btn-cancel')?.click();
     }
 });
-
 // Feedback visual para cliques
 document.addEventListener('click', function (e) {
     if (e.target.matches('button')) {
@@ -186,6 +178,121 @@ document.addEventListener('click', function (e) {
     }
 });
 
-$('#select-field').select2({
-    theme: 'bootstrap-5'
+document.addEventListener('keydown', (e) => {
+    //Fechamos o modal com a tecla F3
+    if (e.key === 'F8') {
+        const myModalEl = document.getElementById('pesquisaProdutoModal');
+        const modal = bootstrap.Modal.getInstance(myModalEl);
+        modal.hide();
+    }
+});
+
+$("#pesquisa").select2({
+    theme: "bootstrap-5",
+    placeholder: "Selecione um produto",
+    ajax: {
+        url: "/produto/listproductdata",
+        type: "POST",
+        delay: 250
+    }
+    
+});
+// Array para armazenar produtos do carrinho
+let cart = [];
+
+// Função para adicionar produto ao carrinho
+function addToCart(button) {
+    const row = button.closest('tr');
+    const product = {
+        id: row.dataset.id,
+        name: row.dataset.name,
+        price: parseFloat(row.dataset.price),
+        quantity: 1
+    };
+
+    // Verifica se o produto já está no carrinho
+    const existing = cart.find(p => p.id === product.id);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push(product);
+    }
+
+    updateCart();
+}
+
+// Atualiza o carrinho na interface
+function updateCart() {
+    const cartSection = document.querySelector('.cart-section');
+    const cartEmpty = cartSection.querySelector('.cart-empty');
+    const cartItems = cartSection.querySelector('.cart-items');
+
+    // Remove itens antigos se houver
+    if (cartItems) cartItems.remove();
+
+    if (cart.length === 0) {
+        cartEmpty.style.display = 'flex';
+    } else {
+        cartEmpty.style.display = 'none';
+
+        const table = document.createElement('table');
+        table.classList.add('cart-items');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Preço</th>
+                    <th>Total</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cart.map(item => `
+                    <tr data-id="${item.id}">
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>R$ ${item.price.toFixed(2)}</td>
+                        <td>R$ ${(item.price * item.quantity).toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        `;
+        cartSection.insertBefore(table, cartSection.querySelector('.payment-section'));
+    }
+
+    updateTotals();
+}
+
+// Remove produto do carrinho
+function removeFromCart(id) {
+    cart = cart.filter(item => item.id !== id);
+    updateCart();
+}
+
+// Atualiza subtotal e total
+function updateTotals() {
+    let subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const subtotalElem = document.querySelector('.subtotal .amount');
+    const totalElem = document.querySelector('.total .total-amount');
+
+    subtotalElem.textContent = `R$ ${subtotal.toFixed(2)}`;
+    totalElem.textContent = `R$ ${subtotal.toFixed(2)}`;
+}
+
+// Opcional: Botão Finalizar Venda
+document.querySelector('.btn-finalize').addEventListener('click', () => {
+    if(cart.length === 0){
+        alert("Carrinho vazio!");
+        return;
+    }
+    console.log("Venda finalizada:", cart);
+    alert("Venda finalizada com sucesso!");
+    cart = [];
+    updateCart();
 });

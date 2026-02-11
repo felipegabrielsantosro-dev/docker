@@ -1,41 +1,45 @@
 {% extends "main.html" %}
+
 {% block main %}
-<form id="form">
+<form id="form" role="form" aria-label="Formulário de lista de produtos">
     <input type="hidden" id="id" name="id">
 
     <div class="container my-4">
         <div class="card shadow-sm border-0">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 d-flex align-items-center gap-2">
-                    <i class="fas fa-box"></i> Lista de Produtos
+                <h5 class="mb-0 d-flex align-items-center gap-2" role="heading" aria-level="2">
+                    <i class="fas fa-box" aria-hidden="true"></i> Lista de Produtos
                 </h5>
 
                 <div class="d-flex gap-2">
-                    <a href="/produto/cadastro" class="btn btn-success d-flex align-items-center gap-2">
-                        <i class="fas fa-plus"></i> Cadastrar
+                    <a href="/produto/cadastro" class="btn btn-success d-flex align-items-center gap-2" role="button" aria-label="Cadastrar novo produto">
+                        <i class="fas fa-plus" aria-hidden="true"></i> Cadastrar
                     </a>
 
-                    <a href="/produto/print" target="_blank" class="btn btn-info">
-                        <i class="fas fa-print"></i> Imprimir
+                    <a href="/produto/print" target="_blank" class="btn btn-info" role="button" aria-label="Imprimir lista de produtos">
+                        <i class="fas fa-print" aria-hidden="true"></i> Imprimir
                     </a>
                 </div>
             </div>
 
             <div class="card-body">
-                <table class="table table-hover align-middle" id="tabela">
+                <table class="table table-hover align-middle" id="tabela" aria-describedby="tabelaDescricao" role="grid">
+                    <caption id="tabelaDescricao" class="visually-hidden">
+                        Lista de produtos cadastrados no sistema com informações de código, nome, código de barras, preço, status, ações e data de cadastro.
+                    </caption>
                     <thead class="table-light">
-                        <tr>
-                            <th><i class="fas fa-hashtag"></i> Código</th>
-                            <th><i class="fas fa-box-open"></i> Produto</th>
-                            <th><i class="fas fa-barcode"></i> Código de Barras</th>
-                            <th><i class="fas fa-tags"></i> Preço</th>
-                            <th><i class="fas fa-check-circle"></i> Status</th>
-                            <th class="text-center"><i class="fas fa-cogs"></i> Ações</th>
-                            <th><i class="fas fa-calendar"></i> Cadastro</th>
+                        <tr role="row">
+                            <th scope="col"><i class="fas fa-hashtag" aria-hidden="true"></i> Código</th>
+                            <th scope="col"><i class="fas fa-box-open" aria-hidden="true"></i> Produto</th>
+                            <th scope="col"><i class="fas fa-barcode" aria-hidden="true"></i> Código de Barras</th>
+                            <th scope="col"><i class="fas fa-tags" aria-hidden="true"></i> Preço</th>
+                            <th scope="col"><i class="fas fa-check-circle" aria-hidden="true"></i> Status</th>
+                            <th scope="col" class="text-center"><i class="fas fa-cogs" aria-hidden="true"></i> Ações</th>
+                            <th scope="col"><i class="fas fa-calendar" aria-hidden="true"></i> Cadastro</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {# preenchido via JS #}
+                        {# Conteúdo será preenchido via JavaScript #}
                     </tbody>
                 </table>
             </div>
@@ -47,6 +51,8 @@
 {% block script %}
 {% include "script.html" %}
 <script defer type="module" src="/js/listaproduto.js"></script>
+{% endblock %}
+
 <script>
 // Função para imprimir a tabela
 function imprimirTabela() {

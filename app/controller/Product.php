@@ -109,75 +109,27 @@ class Produto extends Base
         die;
     }
 }
-   public function listproduto($request, $response)
-{
-    $form = $request->getParsedBody();
 
-    $order     = $form['order'][0]['column'];
-    $orderType = $form['order'][0]['dir'];
-    $start     = $form['start'];
-    $length    = $form['length'];
-
-    $fields = [
-        0 => 'id',
-        1 => 'nome',
-        2 => 'preco',
-        3 => 'estoque',
-        4 => 'ativo',
-        5 => 'data_cadastro'
-    ];
-
-    $orderField = $fields[$order];
-    $term       = $form['search']['value'];
-
-    $query = SelectQuery::select('id,nome,preco,estoque,ativo,data_cadastro')
-        ->from('product');
-
-    if (!empty($term)) {
-        $query->where('nome', 'ilike', "%{$term}%");
+  public function listproductdata($request, $response)
+    {
+        $form = $request->getParsedBody();
+        $term = $form['term'] ?? null;
+        $query = SelectQuery::select('id, codigo_barra, nome')->from('product');
+        if ($term != null) {
+            $query->where('codigo_barra', 'ILIKE', "%$term%", 'or')
+                ->where('nome', 'ILIKE', "%$term%");
+        }
+        $data = [];
+        $results = $query->fetchAll();
+        foreach ($results as $key => $item) {
+            $data['results'][$key] = [
+                'id' => $item['id'],
+                'text' => 'Cód barra: ' . $item['codigo_barra'] . ' - ' . $item['nome']
+            ];
+        }
+        $data['pagination'] = ['more' => true];
+         return $this->SendJson($response, $data);
     }
-
-    $produtos = $query
-        ->order($orderField, $orderType)
-        ->limit($length, $start)
-        ->fetchAll();
-
-    $dataTable = [];
-
-    foreach ($produtos as $key => $value) {
-        $status = $value['ativo']
-            ? '<span class="badge bg-success">Ativo</span>'
-            : '<span class="badge bg-danger">Inativo</span>';
-
-        $dataTable[$key] = [
-            $value['id'],
-            $value['nome'],
-            $value['preco'],
-            $value['estoque'],
-            $status,
-            date('d/m/Y', strtotime($value['data_cadastro'])),
-
-            "<a href='/produto/editar/{$value['id']}' class='btn btn-warning btn-sm'>
-                <i class='bi bi-pencil'></i>
-             </a>
-
-             <button onclick='Delete({$value['id']})' class='btn btn-danger btn-sm'>
-                <i class='bi bi-trash'></i>
-             </button>"
-        ];
-    }
-
-    $response->getBody()->write(json_encode([
-        'status' => true,
-        'recordsTotal' => count($produtos),
-        'recordsFiltered' => count($produtos),
-        'data' => $dataTable
-    ]));
-
-    return $response
-        ->withHeader('Content-Type', 'application/json')
-        ->withStatus(200);
-}
     public function print($request, $response)
     {
         $html = $this->getHtml('reportproduto.html');
@@ -247,5 +199,47 @@ class Produto extends Base
     }
 }
 
+    public function view($request, $response, $args)
+    {
+        try {
+            $id = $args['id'];
 
+            $produto = SelectQuery::select()
+                ->from('produto')
+                ->where('id', '=', $id)
+                ->fetch();
+
+            $dadosTemplate = [
+                'titulo' => 'Detalhes do Produto',
+                'produto' => $produto
+            ];
+
+            return $this->getTwig()
+                ->render($response, $this->setView('viewproduto'), $dadosTemplate)
+                ->withHeader('Content-Type', 'text/html')
+                ->withStatus(200);
+
+        } catch (\Exception $e) {
+            echo "Erro: " . $e->getMessage();
+            die;
+        }
+    }
+    
+    public function addToCart($request, $response)
+    {
+        try {
+            $idProduto = $_POST['idProduto'];
+            $quantidade = $_POST['quantidade'];
+
+            // Lógica para adicionar o produto ao carrinho
+            // Exemplo: Salvar no banco de dados ou na sessão
+
+            echo json_encode(['status' => true, 'msg' => 'Produto adicionado ao carrinho!']);
+            die;
+
+        } catch (\Throwable $th) {
+            echo json_encode(['status' => false, 'msg' => $th->getMessage()]);
+            die;
+        }
+    }   
 }

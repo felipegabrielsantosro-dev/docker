@@ -24,4 +24,14 @@ class Sale extends Base
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
+    public function insert($request, $response)
+    {
+        $dadosTemplate = [
+            'titulo' => 'Página inicial'
+        ];
+        return $this->getTwig()
+            ->render($response, $this->setView('insertsale'), $dadosTemplate)
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(200);
+    }
 }

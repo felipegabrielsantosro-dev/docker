@@ -13,6 +13,7 @@ use app\controller\Produto;
 use Slim\Routing\RouteCollectorProxy;
 
 
+
 $app->get('/', Home::class . ':home'); #->add(Auth::route());
 $app->get('/home', Home::class . ':home'); #->add(Auth::route());
 #$app->get('/', ControllerHome::class . ':home')->add(Middlewares::route());
@@ -26,6 +27,8 @@ $app->group('/home', function (RouteCollectorProxy $group) {
 $app->group('/venda', function (RouteCollectorProxy $group) {
     $group->get('/lista', Sale::class . ':lista');
     $group->get('/cadastro', Sale::class . ':cadastro');
+    $group->get('/insert', Sale::class . ':insert');
+    $group->get('/update', Sale::class . ':update');
 });
 $app->group('/login', function (RouteCollectorProxy $group) {
     $group->post('/precadastro', Login::class . ':precadastro');
@@ -83,6 +86,8 @@ $app->group('/produto', function (RouteCollectorProxy $group) {
         $group->post('/insert',Produto::class . ':insert');
         $group->post('/update',Produto::class . ':update');
         $group->post('/delete',Produto::class . ':delete');
+        $group->get('/view/{id}',Produto::class . ':view');
+        $group->post('/addtocart',Produto::class . ':addToCart');
         
 });
 
