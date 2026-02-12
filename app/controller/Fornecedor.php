@@ -73,7 +73,7 @@ class Fornecedor extends Base
             die;
         }
     }
-    public function listfornecedor($request, $response)
+    public function listafornecedor($request, $response)
     {
         #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
         $form = $request->getParsedBody();

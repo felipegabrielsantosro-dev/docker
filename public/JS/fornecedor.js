@@ -9,7 +9,7 @@ $('#cpf_cnpj').inputmask({ "mask": ["999.999.999-99", "99.999.999/9999-99"] });
 
 async function insert() {
     //Valida todos os campos do formulário
-    const IsValid = Validate
+    /*const IsValid = Validate
         .SetForm('form')//Inform o ID do form
         .Validate();//Aplica a validação no campos 
     if (!IsValid) {
@@ -25,7 +25,7 @@ async function insert() {
         });
         //Em caso de erro encerramos o processo.
         return;
-    }
+    }*/
     const response = await Requests.SetForm('form').Post('/fornecedor/insert');
     if (!response.status) {
         Swal.fire({
@@ -57,7 +57,7 @@ async function insert() {
     });
 }
 async function update() {
-    //Valida todos os campos do formulário
+    /*//Valida todos os campos do formulário
     const IsValid = Validate
         .SetForm('form')//Inform o ID do form
         .Validate();//Aplica a validação no campos 
@@ -74,7 +74,7 @@ async function update() {
         });
         //Em caso de erro encerramos o processo.
         return;
-    }
+    }*/
     const response = await Requests.SetForm('form').Post('/fornecedor/update');
     if (!response.status) {
         Swal.fire({
@@ -102,4 +102,10 @@ async function update() {
 }
 Salvar.addEventListener('click', async () => {
     (Action.value === 'c') ? await insert() : await update();
+
+    const ativoInput = document.getElementById('ativo');
+    const dados = {
+        nome_fantasia: document.getElementById('nome_fantasia').value,
+        ativo: ativoInput.type === 'checkbox' ? ativoInput.checked : ativoInput.value === 'true'
+    };
 });

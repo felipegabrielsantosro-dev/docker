@@ -1,3 +1,7 @@
+import { Validate } from "./Validate.js";
+import { Requests } from "./Requests.js";
+
+const insertItemButton = document.getElementById('insertItemButton');
 // Atualizar relógio em tempo real
 function updateClock() {
     const now = new Date();
@@ -30,6 +34,28 @@ function updateClock() {
 // Atualizar a cada segundo
 setInterval(updateClock, 1000);
 updateClock();
+
+async function InsertSale() {
+    const valid = Validate.SetForm('form').Validate();
+    if (!valid) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Por favor, preencha os campos corretamente.',
+            time: 2000,
+            progressBar: true,
+        });
+        return;
+    }
+    try {
+        const response = await Requests.SetForm('form').Post('/venda/insert');
+
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+// Carrinho de compras
 // Event Listeners para botões de adicionar
 document.addEventListener('DOMContentLoaded', function () {
     // Botões de adicionar produto
@@ -153,24 +179,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-// Atalhos de teclado
-document.addEventListener('keydown', function (e) {
-    // F2 - Focar no campo de busca
-    if (e.key === 'F2') {
-        e.preventDefault();
-        document.querySelector('.search-input')?.focus();
-    }
-    // F9 - Finalizar venda
-    if (e.key === 'F9') {
-        e.preventDefault();
-        document.querySelector('.btn-finalize')?.click();
-    }
-    // Esc - Cancelar venda
-    if (e.key === 'Escape') {
-        e.preventDefault();
-        document.querySelector('.btn-cancel')?.click();
-    }
-});
 // Feedback visual para cliques
 document.addEventListener('click', function (e) {
     if (e.target.matches('button')) {
@@ -178,121 +186,49 @@ document.addEventListener('click', function (e) {
     }
 });
 
+insertItemButton.addEventListener('click', async () => {
+    await InsertSale();
+});
+
 document.addEventListener('keydown', (e) => {
-    //Fechamos o modal com a tecla F3
+    //Bloque a ação de teclas F4, F8 e F9, F12 para evitar ações indesejadas
+    //e.preventDefault();
+    //Abrimos o modal de pesquisa de produto com a tecla F4
+    if (e.key === 'F4') {
+        const myModalEl = document.getElementById('pesquisaProdutoModal');
+        const modal = new bootstrap.Modal(myModalEl);
+        modal.show();
+    }
+    //Fechamos o modal de pesquisa de produto com a tecla F8
     if (e.key === 'F8') {
         const myModalEl = document.getElementById('pesquisaProdutoModal');
-        const modal = bootstrap.Modal.getInstance(myModalEl);
+        const modal = new bootstrap.Modal(myModalEl);
         modal.hide();
     }
+    //Inserimos o item da venda com a tecla F9
+    if (e.key === 'F9') {
+        alert('olá');
+    }
 });
 
-$("#pesquisa").select2({
-    theme: "bootstrap-5",
+$('#pesquisa').select2({
+    theme: 'bootstrap-5',
     placeholder: "Selecione um produto",
+    language: "pt-BR",
     ajax: {
-        url: "/produto/listproductdata",
-        type: "POST",
-        delay: 250
+        url: '/produto/listproductdata',
+        type: 'POST'
     }
-    
 });
-// Array para armazenar produtos do carrinho
-let cart = [];
-
-// Função para adicionar produto ao carrinho
-function addToCart(button) {
-    const row = button.closest('tr');
-    const product = {
-        id: row.dataset.id,
-        name: row.dataset.name,
-        price: parseFloat(row.dataset.price),
-        quantity: 1
-    };
-
-    // Verifica se o produto já está no carrinho
-    const existing = cart.find(p => p.id === product.id);
-    if (existing) {
-        existing.quantity += 1;
-    } else {
-        cart.push(product);
-    }
-
-    updateCart();
-}
-
-// Atualiza o carrinho na interface
-function updateCart() {
-    const cartSection = document.querySelector('.cart-section');
-    const cartEmpty = cartSection.querySelector('.cart-empty');
-    const cartItems = cartSection.querySelector('.cart-items');
-
-    // Remove itens antigos se houver
-    if (cartItems) cartItems.remove();
-
-    if (cart.length === 0) {
-        cartEmpty.style.display = 'flex';
-    } else {
-        cartEmpty.style.display = 'none';
-
-        const table = document.createElement('table');
-        table.classList.add('cart-items');
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Qtd</th>
-                    <th>Preço</th>
-                    <th>Total</th>
-                    <th>Ação</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${cart.map(item => `
-                    <tr data-id="${item.id}">
-                        <td>${item.name}</td>
-                        <td>${item.quantity}</td>
-                        <td>R$ ${item.price.toFixed(2)}</td>
-                        <td>R$ ${(item.price * item.quantity).toFixed(2)}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="removeFromCart('${item.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('')}
-            </tbody>
-        `;
-        cartSection.insertBefore(table, cartSection.querySelector('.payment-section'));
-    }
-
-    updateTotals();
-}
-
-// Remove produto do carrinho
-function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
-    updateCart();
-}
-
-// Atualiza subtotal e total
-function updateTotals() {
-    let subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const subtotalElem = document.querySelector('.subtotal .amount');
-    const totalElem = document.querySelector('.total .total-amount');
-
-    subtotalElem.textContent = `R$ ${subtotal.toFixed(2)}`;
-    totalElem.textContent = `R$ ${subtotal.toFixed(2)}`;
-}
-
-// Opcional: Botão Finalizar Venda
-document.querySelector('.btn-finalize').addEventListener('click', () => {
-    if(cart.length === 0){
-        alert("Carrinho vazio!");
-        return;
-    }
-    console.log("Venda finalizada:", cart);
-    alert("Venda finalizada com sucesso!");
-    cart = [];
-    updateCart();
+$('.form-select').on('select2:open', function (e) {
+    let inputElement = document.querySelector('.select2-search__field');
+    inputElement.placeholder = 'Digite para pesquisar...';
+    inputElement.focus();
 });
+
+// alterar a ação do formulario para 'e'(editar)após a venda ser inserida com sucesso
+Action.value = 'e';
+//seta o ID da ultima venda inserida no banco de dados
+IdleDeadline.value = response.id;
+//atualiza a url sem recarregar a página para refletir o ID da venda inserida
+window.history.pushState({}, '', `/venda/${response.id}`);

@@ -1,38 +1,80 @@
 {% extends "main.html" %}
+
 {% block main %}
 <form id="form">
     <input type="hidden" id="id" name="id">
-    <div class="container my-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+    <div class="container py-4">
+        <div class="card shadow border-0 rounded-3">
+
+            <!-- Header -->
+            <div class="card-header bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+
                 <h5 class="mb-0 d-flex align-items-center gap-2">
-                    <i class="fas fa-users"></i> Lista de Usuários
+                    <i class="fas fa-users"></i>
+                    Lista de Usuários
                 </h5>
 
-            <a href="/usuario/cadastro" class="btn btn-success">Cadastrar</a>
-            <a href="/usuario/print" target="_blank" class="btn btn-info">Imprimir</a>
+                <div class="d-flex gap-2">
+                    <a href="/usuario/cadastro" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> Cadastrar
+                    </a>
+
+                    <a href="/usuario/print" target="_blank" class="btn btn-light btn-sm">
+                        <i class="fas fa-print"></i> Imprimir
+                    </a>
+                </div>
+
             </div>
+
+            <!-- Body -->
             <div class="card-body">
-                <table class="table table-hover align-middle" id="tabela">
-                    <thead class="table-light">
-                        <tr>
-                            <th><i class="fas fa-hashtag"></i> Código</th>
-                            <th><i class="fas fa-user"></i> Nome</th>
-                            <th><i class="fas fa-user-tag"></i> Sobrenome</th>
-                            <th><i class="fas fa-id-card"></i> CPF</th>
-                            <th><i class="fas fa-id-badge"></i> RG</th>
-                            <th class="text-center"><i class="fas fa-cogs"></i> Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody> 
-                    </tbody>
-                </table>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-striped" id="tabela">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i> Código</th>
+                                <th><i class="fas fa-user me-1"></i> Nome</th>
+                                <th><i class="fas fa-user-tag me-1"></i> Sobrenome</th>
+                                <th><i class="fas fa-id-card me-1"></i> CPF</th>
+                                <th><i class="fas fa-id-badge me-1"></i> RG</th>
+                                <th class="text-center">
+                                    <i class="fas fa-cogs me-1"></i> Ações
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <!-- Conteúdo carregado via JS -->
+                        </tbody>
+
+                    </table>
+                </div>
+
             </div>
+
         </div>
     </div>
 </form>
 {% endblock %}
+
+
 {% block script %}
-{% include "script.html" %}
-<script defer type="module" src="/js/listuser.js"></script>
+    {% include "script.html" %}
+    <script defer type="module" src="/js/listuser.js"></script>
+    <script>
+// Função para imprimir a tabela
+function imprimirTabela() {
+    const tabelaConteudo = document.getElementById('tabela-container').innerHTML;
+    const janela = window.open('', '', 'width=900,height=600');
+    janela.document.write('<html><head><title>Imprimir Tabela</title>');
+    janela.document.write('<link rel="stylesheet" href="/path/to/bootstrap.min.css">'); // se quiser o estilo
+    janela.document.write('</head><body>');
+    janela.document.write(tabelaConteudo);
+    janela.document.write('</body></html>');
+    janela.document.close();
+    janela.print();
+}
+</script>
 {% endblock %}

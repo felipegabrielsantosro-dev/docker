@@ -17,23 +17,14 @@ const tabela = new $('#tabela').DataTable({
         searchPlaceholder: 'Digite sua pesquisa...'
     },
     ajax: {
-        url: '/fornecedor/listafornecedor',
+        url: '/fornecedor/listfornecedor',
         type: 'POST'
     }
 });
 
-// ================= DELETE =================
 async function Delete(id) {
-
-    const inputId = document.getElementById('id');
-    if (inputId) {
-        inputId.value = id;
-    }
-
-    const response = await Requests
-        .SetForm('form')
-        .Post('/fornecedor/delete');
-
+    document.getElementById('id').value = id;
+    const response = await Requests.SetForm('form').Post('/fornecedor/delete');
     if (!response.status) {
         Swal.fire({
             title: "Erro ao remover!",
@@ -41,28 +32,22 @@ async function Delete(id) {
             html: response.msg,
             timer: 3000,
             timerProgressBar: true,
-            didOpen: () => Swal.showLoading()
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
         return;
     }
-
     Swal.fire({
         title: "Removido com sucesso!",
         icon: "success",
         html: response.msg,
         timer: 3000,
         timerProgressBar: true,
-        didOpen: () => Swal.showLoading()
+        didOpen: () => {
+            Swal.showLoading();
+        }
     });
-
     tabela.ajax.reload();
 }
-
-// ================= EDITAR =================
-function Editar(id) {
-    window.location.href = `/fornecedor/editar/${id}`;
-}
-
-// expõe para o HTML
 window.Delete = Delete;
-window.Editar = Editar;

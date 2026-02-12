@@ -16,7 +16,7 @@ class Cliente extends Base
                 'titulo' => 'Página inicial'
             ];
             return $this->getTwig()
-                ->render($response, $this->setView('listcliente'), $dadosTemplate)
+                ->render($response, $this->setView('listacliente'), $dadosTemplate)
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
         } catch (\Exception $e) {
@@ -98,16 +98,14 @@ class Cliente extends Base
     }
     public function listcliente($request, $response)
     {
-        #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
-        $form = $request->getParsedBody();
-        #Qual a coluna da tabela deve ser ordenada.
-        $order = $form['order'][0]['column'];
-        #Tipo de ordenação
-        $orderType = $form['order'][0]['dir'];
-        #Em qual registro se inicia o retorno dos registros, OFFSET
-        $start = $form['start'];
-        #Limite de registro a serem retornados do banco de dados LIMIT
-        $length = $form['length'];
+        $form = $request->getParsedBody() ?? [];
+
+        $order      = $form['order'][0]['column'] ?? 0;
+        $orderType  = $form['order'][0]['dir'] ?? 'asc';
+        $start      = $form['start'] ?? 0;
+        $length     = $form['length'] ?? 10;
+        $term       = $form['search']['value'] ?? '';
+
         $fields = [
             0 => 'id',
             1 => 'nome_fantasia',
@@ -116,53 +114,57 @@ class Cliente extends Base
             4 => 'rg_ie',
             5 => 'ativo',
         ];
-        #Capturamos o nome do campo a ser odernado.
-        $orderField = $fields[$order];
-        #O termo pesquisado
-        $term = $form['search']['value'];
-        $query = SelectQuery::select('id,nome_fantasia,sobrenome_razao,cpf_cnpj,rg_ie,ativo')->from('customer');
-        if (!is_null($term) && ($term !== '')) {
+
+        $orderField = $fields[$order] ?? 'id';
+
+        $query = SelectQuery::select('id,nome_fantasia,sobrenome_razao,cpf_cnpj,rg_ie,ativo')
+            ->from('customer');
+
+        if (!empty($term)) {
             $query->where('nome_fantasia', 'ilike', "%{$term}%", 'or')
                 ->where('sobrenome_razao', 'ilike', "%{$term}%", 'or')
                 ->where('cpf_cnpj', 'ilike', "%{$term}%", 'or')
-                ->where('rg_ie', 'ilike', "%{$term}%", 'or')
-                ->where('ativo', 'ilike', "%{$term}%");
+                ->where('rg_ie', 'ilike', "%{$term}%");
         }
-        $$customer = $query
+
+        $customer = $query
             ->order($orderField, $orderType)
             ->limit($length, $start)
             ->fetchAll();
-        $$customerData = [];
-        foreach ($$customer as $key => $value) {
-            $$customerData[$key] = [
+
+        $customerData = [];
+
+        foreach ($customer as $key => $value) {
+            $customerData[$key] = [
                 $value['id'],
                 $value['nome_fantasia'],
                 $value['sobrenome_razao'],
                 $value['cpf_cnpj'],
                 $value['rg_ie'],
                 $value['ativo'] ? 'Sim' : 'Não',
-                "<a href=\"/cliente/alterar/" . $value['id'] . "\" class=\"btn btn-warning\"><i class=\"fa-solid fa-pen-to-square\"></i>Alterar</a>
-
-                <button type='button'  onclick='Delete(" . $value['id'] . ");' class='btn btn-danger'>
-                 <i class=\"bi bi-trash-fill\"></i>
-                 Excluir
-                 </button>"
+                "<a href=\"/cliente/alterar/{$value['id']}\" class=\"btn btn-warning btn-sm\">
+                <i class=\"fa-solid fa-pen-to-square\"></i> Alterar
+            </a>
+            <button type='button' onclick='Delete({$value['id']});' class='btn btn-danger btn-sm'>
+                <i class=\"bi bi-trash-fill\"></i> Excluir
+            </button>"
             ];
         }
+
         $data = [
             'status' => true,
-            'recordsTotal' => count($$customer),
-            'recordsFiltered' => count($$customer),
-            'data' => $$customerData
+            'recordsTotal' => count($customer),
+            'recordsFiltered' => count($customer),
+            'data' => $customerData
         ];
-        $payload = json_encode($data);
 
-        $response->getBody()->write($payload);
+        $response->getBody()->write(json_encode($data));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
     }
+
     public function update($request, $response)
     {
         try {
@@ -188,34 +190,33 @@ class Cliente extends Base
         }
     }
     public function print($request, $response)
-{
-    try {
-        // Busca todos os clientes usando sua SelectQuery
-        // Selecionei as colunas baseadas no que o seu HTML original pedia
-        $$customer = SelectQuery::select('id, nome_fantasia, sobrenome_razao, cpf_cnpj, rg_ie')
-            ->from('customer')
-            ->order('nome_fantasia', 'ASC')
-            ->order('sobrenome_razao', 'ASC')
-            ->order('cpf_cnpj', 'ASC')
-            ->order('rg_ie', 'ASC')
-            ->fetchAll();
+    {
+        try {
+            // Busca todos os clientes usando sua SelectQuery
+            // Selecionei as colunas baseadas no que o seu HTML original pedia
+            $$customer = SelectQuery::select('id, nome_fantasia, sobrenome_razao, cpf_cnpj, rg_ie')
+                ->from('customer')
+                ->order('nome_fantasia', 'ASC')
+                ->order('sobrenome_razao', 'ASC')
+                ->order('cpf_cnpj', 'ASC')
+                ->order('rg_ie', 'ASC')
+                ->fetchAll();
 
-        $dadosTemplate = [
-            'titulo'   => 'Relatório de Clientes',
-            'clientes' => $$customer,
-            'total'    => count($customer)
-        ];
+            $dadosTemplate = [
+                'titulo'   => 'Relatório de Clientes',
+                'clientes' => $$customer,
+                'total'    => count($customer)
+            ];
 
-        // Renderiza o template passando os dados
-        // Nota: Certifique-se que o método render do seu Base aceita esses parâmetros
-        return $this->getTwig()
-    ->render($response, $this->setView('reports/reportcliente'), $dadosTemplate)
-            ->withHeader('Content-Type', 'text/html')
-            ->withStatus(200);
-
-    } catch (\Exception $e) {
-        $response->getBody()->write("Erro ao gerar relatório: " . $e->getMessage());
-        return $response->withStatus(500);
+            // Renderiza o template passando os dados
+            // Nota: Certifique-se que o método render do seu Base aceita esses parâmetros
+            return $this->getTwig()
+                ->render($response, $this->setView('reports/reportcliente'), $dadosTemplate)
+                ->withHeader('Content-Type', 'text/html')
+                ->withStatus(200);
+        } catch (\Exception $e) {
+            $response->getBody()->write("Erro ao gerar relatório: " . $e->getMessage());
+            return $response->withStatus(500);
+        }
     }
-}
 }

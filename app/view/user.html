@@ -83,22 +83,6 @@
                                             placeholder="Digite seu RG" required value="{{usuario.rg}}">
                                     </div>
 
-                                   <div class="col-md-4">
-                                        <label for="data_nascimento" class="form-label">
-                                            <i class="fas fa-calendar"></i> Data de nascimento
-                                        </label>
-                                        <input type="date" class="form-control" id="data_nascimento"
-                                            name="data_nascimento" required value="{{usuario.data_nascimento}}">
-                                    </div>
-
-                                   <div class="col-md-4" id="campo_senha">
-                                        <label for="senha" class="form-label">
-                                            <i class="fas fa-lock"></i> Senha
-                                        </label>
-                                        <input type="password" class="form-control" id="campo_senha" name="senha"
-                                            placeholder="Digite sua senha" {% if acao == 'C' %} required {% endif %}>
-                                    </div>
-
                                     <div class="col-md-6 d-flex align-items-center">
                                         <div class="form-check mt-2">
                                             <input class="form-check-input" type="checkbox" id="ativo" name="ativo"

@@ -2,53 +2,30 @@
 
 namespace app\controller;
 
-use app\database\builder\SelectQuery;
 use app\database\builder\InsertQuery;
-use app\database\builder\UpdateQuery;
 use app\database\builder\DeleteQuery;
-
+use app\database\builder\SelectQuery;
+use app\database\builder\UpdateQuery;
 
 class User extends Base
 {
+
     public function lista($request, $response)
     {
-        try {
-            $dadosTemplate = [
-                'titulo' => 'Pesquisa de usuários'
-            ];
-            return $this->getTwig()
-                ->render($response, $this->setView('listauser'), $dadosTemplate)
-                ->withHeader('Content-Type', 'text/html')
-                ->withStatus(200);
-        } catch (\Exception $e) {
-            var_dump($e);
-        }
+        $dadosTemplate = [
+            'titulo' => 'Lista de usuário'
+        ];
+        return $this->getTwig()
+            ->render($response, $this->setView('listauser'), $dadosTemplate)
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(200);
     }
     public function cadastro($request, $response)
     {
         try {
             $dadosTemplate = [
                 'acao' => 'c',
-                'titulo' => 'Cadastro e edição'
-            ];
-            return $this->getTwig()
-                ->render($response, $this->setView('user'), $dadosTemplate)
-                ->withHeader('Content-Type', 'text/html')
-                ->withStatus(200);
-        } catch (\Exception $e) {
-            var_dump($e);
-        }
-    }
-    public function alterar($request, $response, $args)
-    {
-        try {
-            $id = $args['id'];
-            $user = SelectQuery::select()->from('usuario')->where('id', '=', $id)->fetch();
-            $dadosTemplate = [
-                'acao' => 'e',
-                'id' => $id,
-                'titulo' => 'Cadastro e edição',
-                'user' => $user
+                'titulo' => 'Cadastro'
             ];
             return $this->getTwig()
                 ->render($response, $this->setView('user'), $dadosTemplate)
@@ -66,16 +43,118 @@ class User extends Base
                 'nome' => $form['nome'],
                 'sobrenome' => $form['sobrenome'],
                 'cpf' => $form['cpf'],
-                'rg' => $form['rg']
+                'rg' => $form['rg'],
             ];
-            $IsSave = InsertQuery::table('usuario')->save($FieldAndValues);
+            $IsSave = InsertQuery::table('users')->save($FieldAndValues);
             if (!$IsSave) {
                 return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $IsSave, 'id' => 0], 403);
             }
-            $user = SelectQuery::select('id')->from('usuario')->order('id', 'desc')->fetch();
+            $user = SelectQuery::select('id')->from('users')->order('id', 'desc')->fetch();
             return $this->SendJson($response, ['status' => true, 'msg' => 'Salvo com sucesso', 'id' => $user['id']], 201);
         } catch (\Exception $e) {
             return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
+        }
+    }
+    public function listuser($request, $response)
+    {
+        #Captura todas a variaveis de forma mais segura VARIAVEIS POST.
+        $form = $request->getParsedBody();
+        #Qual a coluna da tabela deve ser ordenada.
+        $order = $form['order'][0]['column'];
+        #Tipo de ordenação
+        $orderType = $form['order'][0]['dir'];
+        #Em qual registro se inicia o retorno dos registros, OFFSET
+        $start = $form['start'];
+        #Limite de registro a serem retornados do banco de dados LIMIT
+        $length = $form['length'];
+        $fields = [
+            0 => 'id',
+            1 => 'nome',
+            2 => 'sobrenome',
+            3 => 'cpf',
+            4 => 'rg'
+        ];
+        #Capturamos o nome do campo a ser odernado.
+        $orderField = $fields[$order];
+        #O termo pesquisado
+        $term = $form['search']['value'];
+        $query = SelectQuery::select('id,nome,sobrenome,cpf,rg')->from('users');
+        if (!is_null($term) && ($term !== '')) {
+            $query->where('nome', 'ilike', "%{$term}%", 'or')
+                ->where('sobrenome', 'ilike', "%{$term}%", 'or')
+                ->where('rg', 'ilike', "%{$term}%", 'or')
+                ->where('cpf', 'ilike', "%{$term}%");
+        }
+        $users = $query
+            ->order($orderField, $orderType)
+            ->limit($length, $start)
+            ->fetchAll();
+        $userData = [];
+        foreach ($users as $key => $value) {
+            $userData[$key] = [
+                $value['id'],
+                $value['nome'],
+                $value['sobrenome'],
+                $value['rg'],
+                $value['cpf'],
+                "<a href=\"/usuario/alterar/" . $value['id'] . "\" class=\"btn btn-warning\"><i class=\"fa-solid fa-pen-to-square\"></i>Alterar</a>
+
+                <button type='button'  onclick='Delete(" . $value['id'] . ");' class='btn btn-danger'>
+                <i class=\"bi bi-trash-fill\"></i>
+                Excluir
+                </button>"
+            ];
+        }
+        $data = [
+            'status' => true,
+            'recordsTotal' => count($users),
+            'recordsFiltered' => count($users),
+            'data' => $userData
+        ];
+        $payload = json_encode($data);
+
+        $response->getBody()->write($payload);
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
+    }
+    public function alterar($request, $response, $args)
+    {
+        try {
+            $id = $args['id'];
+            $user = SelectQuery::select()->from('users')->where('id', '=', $id)->fetch();
+            $dadosTemplate = [
+                'acao' => 'e',
+                'id' => $id,
+                'titulo' => 'Cadastro e edição',
+                'user' => $user
+            ];
+            return $this->getTwig()
+                ->render($response, $this->setView('user'), $dadosTemplate)
+                ->withHeader('Content-Type', 'text/html')
+                ->withStatus(200);
+        } catch (\Exception $e) {
+            var_dump($e);
+        }
+    }
+    public function delete($request, $response)
+    {
+        try {
+            $id = $_POST['id'];
+            $IsDelete = DeleteQuery::table('users')
+                ->where('id', '=', $id)
+                ->delete();
+
+            if (!$IsDelete) {
+                echo json_encode(['status' => false, 'msg' => $IsDelete, 'id' => $id]);
+                die;
+            }
+            echo json_encode(['status' => true, 'msg' => 'Removido com sucesso!', 'id' => $id]);
+            die;
+        } catch (\Throwable $th) {
+            echo "Erro: " . $th->getMessage();
+            die;
         }
     }
     public function update($request, $response)
@@ -92,7 +171,7 @@ class User extends Base
                 'cpf' => $form['cpf'],
                 'rg' => $form['rg']
             ];
-            $IsUpdate = UpdateQuery::table('usuario')->set($FieldAndValues)->where('id', '=', $id)->update();
+            $IsUpdate = UpdateQuery::table('users')->set($FieldAndValues)->where('id', '=', $id)->update();
             if (!$IsUpdate) {
                 return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $IsUpdate, 'id' => 0], 403);
             }
@@ -101,37 +180,36 @@ class User extends Base
             return $this->SendJson($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
     }
-     public function print($request, $response)
+   public function print($request, $response)
     {
-        $html = $this->getHtml('reportuser.html');
-        return $this->printer($html);
-    }
-    public function delete($request, $response)
-{
     try {
-        $id = $_POST['id'];
+        // 1. Busca os dados na tabela de usuários
+        // Ajuste os nomes das colunas (ex: nome, cpf, celular) conforme seu banco
+        $usuarios = SelectQuery::select('id, nome, sobrenome, cpf, rg')
+            ->from('users') 
+            ->order('nome', 'ASC')
+            ->order('sobrenome', 'ASC')
+            ->order('cpf', 'ASC')
+            ->order('rg', 'ASC')
+            ->fetchAll();
 
-        $IsDelete = DeleteQuery::table('product')
-            ->where('id', '=', $id)
-            ->delete();
+        // 2. Monta o array de dados para o template
+        $dadosTemplate = [
+            'titulo'   => 'Relatório de Usuários',
+            'usuarios' => $usuarios,
+            'total'    => count($usuarios)
+        ];
 
-        if (!$IsDelete) {
-            echo json_encode([
-                'status' => false,
-                'msg' => 'Erro ao remover'
-            ]);
-            die;
-        }
+        // 3. Renderiza o template específico de usuários
+        // Certifique-se de que o arquivo se chama 'reportuser.html' na pasta reports
+        return $this->getTwig()
+            ->render($response, $this->setView('reports/reportuser'), $dadosTemplate)
+            ->withHeader('Content-Type', 'text/html')
+            ->withStatus(200);
 
-        echo json_encode([
-            'status' => true,
-            'msg' => 'Produto removido com sucesso!'
-        ]);
-        die;
-
-    } catch (\Throwable $th) {
-        echo json_encode(['status' => false, 'msg' => $th->getMessage()]);
-        die;
+    } catch (\Exception $e) {
+        $response->getBody()->write("Erro ao gerar relatório: " . $e->getMessage());
+        return $response->withStatus(500);
     }
-}
+    }
 }

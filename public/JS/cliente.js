@@ -2,7 +2,6 @@ import { Validate } from "./Validate.js";
 import { Requests } from "./Requests.js";
 
 const Salvar = document.getElementById('salvar');
-const FieldPassword = document.getElementById('campo_senha');
 const Action = document.getElementById('acao');
 
 $('#cpf_cnpj').inputmask({ "mask": ["999.999.999-99", "99.999.999/9999-99"] });
@@ -100,10 +99,8 @@ async function update() {
         }
     });
 }
-document.getElementById('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+Salvar.addEventListener('click', async () => {
     (Action.value === 'c') ? await insert() : await update();
-
 
     const ativoInput = document.getElementById('ativo');
     const dados = {

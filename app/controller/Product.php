@@ -110,7 +110,7 @@ class Produto extends Base
     }
 }
 
-  public function listproductdata($request, $response)
+  public function listaproduct($request, $response)
     {
         $form = $request->getParsedBody();
         $term = $form['term'] ?? null;
